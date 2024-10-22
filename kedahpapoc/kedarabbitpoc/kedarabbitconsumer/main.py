@@ -1,6 +1,7 @@
 import pika
 import os
 import logging
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -17,6 +18,8 @@ RABBITMQ_VHOST = os.getenv('RABBITMQ_VHOST', 'my_vhost')
 def callback(ch, method, properties, body):
     """Callback function to process messages received from RabbitMQ."""
     logging.info(f"Received message: {body.decode()}")
+    # Simulate processing time by waiting for 2 seconds
+    time.sleep(2)
 
 def consume_messages():
     """Connect to RabbitMQ and start consuming messages."""
