@@ -19,7 +19,9 @@ def callback(ch, method, properties, body):
     """Callback function to process messages received from RabbitMQ."""
     logging.info(f"Received message: {body.decode()}")
     # Simulate processing time by waiting for 2 seconds
-    time.sleep(2)
+    time.sleep(1)
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def consume_messages():
     """Connect to RabbitMQ and start consuming messages."""
@@ -40,7 +42,7 @@ def consume_messages():
         logging.info(f"Connected to RabbitMQ. Consuming messages from exchange '{RABBITMQ_EXCHANGE}' with queue '{queue_name}'.")
 
         # Start consuming messages
-        channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+        channel.basic_consume(queue=queue_name, on_message_callback=callback)
 
         logging.info("Waiting for messages. To exit press CTRL+C")
         channel.start_consuming()
