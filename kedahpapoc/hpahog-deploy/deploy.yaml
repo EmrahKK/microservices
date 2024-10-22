@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-hog-microservice
+  labels:
+    app: fastapi-hog
+spec:
+  replicas: 2  # Initial number of replicas
+  selector:
+    matchLabels:
+      app: fastapi-hog
+  template:
+    metadata:
+      labels:
+        app: fastapi-hog
+    spec:
+      containers:
+      - name: fastapi-hog-container
+        image: fastapi-hog-microservice:latest  # Use the correct image name/tag
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "1000m"  # 1 CPU core
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
