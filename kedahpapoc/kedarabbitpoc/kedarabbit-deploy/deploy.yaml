@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kedarabbitproducer
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: kedarabbitproducer
+    spec:
+      containers:
+      - name: fastapi-hog-container
+        image: fastapi-hog-microservice:latest
+        env:
+        - name: RABBITMQ_HOST
+          value: "your-rabbitmq-host"
+        - name: RABBITMQ_EXCHANGE
+          value: "your-exchange"
+        - name: RABBITMQ_ROUTING_KEY
+          value: "your-routing-key"
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10

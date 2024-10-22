@@ -41,3 +41,33 @@ jobs:
           push: true
           tags: ${{ steps.metaKedaHpaPoc.outputs.tags }}
           labels: ${{ steps.metaKedaHpaPoc.outputs.labels }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: metaKedaRabbitProducerPoc
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: emrahkk/kedarabbitproducerpoc
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: ./kedahpapoc/kedarabbitpoc/kedarabbitproducer
+          file: ./kedahpapoc/kedarabbitpoc/kedarabbitproducer/Dockerfile
+          push: true
+          tags: ${{ steps.metaKedaRabbitProducerPoc.outputs.tags }}
+          labels: ${{ steps.metaKedaRabbitProducerPoc.outputs.labels }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: metaKedaRabbitConsumerPoc
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: emrahkk/kedarabbitconsumerpoc
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: ./kedahpapoc/kedarabbitpoc/kedarabbitconsumer
+          file: ./kedahpapoc/kedarabbitpoc/kedarabbitconsumer/Dockerfile
+          push: true
+          tags: ${{ steps.metaKedaRabbitConsumerPoc.outputs.tags }}
+          labels: ${{ steps.metaKedaRabbitConsumerPoc.outputs.labels }}                    
