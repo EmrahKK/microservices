@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 async def receive_event(request: Request):
     try:
         body = await request.json()
-        
+        logger.info(f"Received event: {body}")  # Log the body to the console
         if 'alertarget' in body['commonLabels'] and 'alertname' in body['commonLabels']:
             # logger.info(f"values: {body['commonLabels']['pod']} : {body['commonLabels']['namespace']}")
             if body['commonLabels']['alertname'] == "HighMemoryUsageForKkbTelcoApi" and body['commonLabels']['alertarget'] == "KkbTelcoApi":
