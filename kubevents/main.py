@@ -13,8 +13,15 @@ logger = logging.getLogger(__name__)
 @app.post("/events")
 async def receive_event(request: Request):
     try:
-        body = await request.json()  # Parse the JSON body
-        logger.info(f"Received event: {body}")  # Log the body to the console
+        body = await request.json()
+        
+        if 'alertarget' in body['commonLabels'] and 'alertname' in body['commonLabels']:
+            logger.info(f"values: {body['commonLabels']['pod']} : {body['commonLabels']['namespace']}")
+            if body['commonLabels']['alertname'] == "HighMemoryUsageForKkbTelcoApi" and body['commonLabels']['alertarget'] == "KkbTelcoApi":
+                logger.info(f"Killing pod: {body['commonLabels']['pod']} in {body['commonLabels']['namespace']}")
+        else:
+            logger.info(f"Alert data is not present in request")            
+        
         return {"message": "Event received successfully"}
     except Exception as e:
         logger.error(f"Failed to process request: {e}")
