@@ -3,6 +3,7 @@ import psutil
 import time
 import logging
 import math
+import subprocess
 
 app = FastAPI()
 
@@ -16,11 +17,15 @@ async def receive_event(request: Request):
         body = await request.json()
         
         if 'alertarget' in body['commonLabels'] and 'alertname' in body['commonLabels']:
-            logger.info(f"values: {body['commonLabels']['pod']} : {body['commonLabels']['namespace']}")
+            # logger.info(f"values: {body['commonLabels']['pod']} : {body['commonLabels']['namespace']}")
             if body['commonLabels']['alertname'] == "HighMemoryUsageForKkbTelcoApi" and body['commonLabels']['alertarget'] == "KkbTelcoApi":
                 logger.info(f"Killing pod: {body['commonLabels']['pod']} in {body['commonLabels']['namespace']}")
+                pod = body['commonLabels']['pod']
+                ns = body['commonLabels']['namespace']
+                cmd = ['kubectl', 'delete', 'po', pod, '-n', ns]
+                subprocess.run(cmd)
         else:
-            logger.info(f"Alert data is not present in request")            
+            logger.info(f"Alert data is not present in the request")            
         
         return {"message": "Event received successfully"}
     except Exception as e:
